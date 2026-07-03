@@ -12,6 +12,7 @@ Import-Module "$Root\Modules\Library\Parser.psm1" -Force
 Import-Module "$Root\Modules\Library\Metadata.psm1" -Force
 Import-Module "$Root\Modules\Library\CollectionStats.psm1" -Force
 Import-Module "$Root\Modules\Database\Database.psm1" -Force
+Import-Module "$Root\Modules\UI\Browser.psm1" -Force
 
 $config = Get-Content "$Root\config.json" -Raw | ConvertFrom-Json
 
@@ -54,27 +55,19 @@ do {
 
         "2" {
 
-            $Games = @(Get-SCMDatabase)
+    $Games = @(Get-SCMDatabase)
 
-            Write-Host ""
+    if ($Games.Count -eq 0) {
 
-            if ($Games.Count -eq 0) {
-                Write-Host "Database is empty." -ForegroundColor Yellow
-                Pause-SCM
-                break
-            }
+        Write-Host ""
+        Write-Host "Database is empty." -ForegroundColor Yellow
+        Pause-SCM
+        break
 
-            Write-Host "========== COLLECTION ==========" -ForegroundColor Cyan
-            Write-Host ""
-            Write-Host ("Games: {0}" -f $Games.Count) -ForegroundColor Green
-            Write-Host ""
+    }
 
-            foreach ($Game in ($Games | Sort-Object Title)) {
-                Write-Host ("{0,-18} {1}" -f $Game.ShortID, $Game.Title)
-            }
-
-            Pause-SCM
-        }
+    Show-SCMBrowseMenu -Games $Games
+}
 
         "3" {
 
