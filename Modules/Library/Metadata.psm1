@@ -79,11 +79,12 @@ function Convert-SCMMetadata {
     # DISPLAY TITLE (SAFE)
     # -------------------------
 
-    $displayTitle = if ($seriesName) {
-        "$seriesName: $gameTitle"
-    } else {
-        $gameTitle
-    }
+    if (-not [string]::IsNullOrWhiteSpace($seriesName)) {
+    $displayTitle = "{0}: {1}" -f $seriesName, $gameTitle
+	}
+	else {
+    $displayTitle = $gameTitle
+}
 
     # -------------------------
     # OUTPUT OBJECT
