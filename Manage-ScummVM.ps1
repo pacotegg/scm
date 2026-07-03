@@ -1,5 +1,5 @@
 ﻿Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Continue"
 
 $Root = Split-Path $PSCommandPath
 

@@ -27,9 +27,13 @@ function Show-SCMBrowseMenu {
 
         switch ($Option) {
 
-            "1" { Show-SCMBrowseByTitle -Games $Games }
+            "1" {
+                Show-SCMBrowseByTitle -Games $Games
+            }
 
-            "2" { Show-SCMBrowseBySeries -Games $Games }
+            "2" {
+                Show-SCMBrowseBySeries -Games $Games
+            }
 
             "3" {
                 Write-Host ""
@@ -65,20 +69,16 @@ function Show-SCMBrowseByTitle {
 
     while ($true) {
 
-        $Titles = $SortedGames | ForEach-Object { $_.DisplayTitle }
-
         $Selection = Show-SCMSelector `
             -Title "Browse by Title" `
-            -Items $Titles
+            -Items ($SortedGames | ForEach-Object DisplayTitle)
 
         if ($Selection -lt 0) {
             return
         }
 
         Show-SCMGameDetails -Game $SortedGames[$Selection]
-
     }
-
 }
 
 function Show-SCMBrowseBySeries {
@@ -88,12 +88,46 @@ function Show-SCMBrowseBySeries {
         [array]$Games
     )
 
-    Clear-Host
+    $Series = @(
+        $Games |
+        Where-Object { -not [string]::IsNullOrWhiteSpace($_.Series) } |
+        Group-Object Series |
+        Sort-Object Name
+    )
 
-    Write-Host ""
-    Write-Host "Not implemented yet." -ForegroundColor Yellow
-    Pause-SCM
+    if ($Series.Count -eq 0) {
 
+        Write-Host ""
+        Write-Host "No series found." -ForegroundColor Yellow
+        Pause-SCM
+        return
+    }
+
+    while ($true) {
+
+        $Selection = Show-SCMSelector `
+            -Title "Browse by Series" `
+            -Items ($Series | ForEach-Object Name)
+
+        if ($Selection -lt 0) {
+            return
+        }
+
+        $GamesInSeries = @(
+            $Series[$Selection].Group |
+            Sort-Object DisplayTitle
+        )
+
+        $GameSelection = Show-SCMSelector `
+            -Title $Series[$Selection].Name `
+            -Items ($GamesInSeries | ForEach-Object DisplayTitle)
+
+        if ($GameSelection -lt 0) {
+            continue
+        }
+
+        Show-SCMGameDetails -Game $GamesInSeries[$GameSelection]
+    }
 }
 
 function Show-SCMGameDetails {
@@ -150,11 +184,8 @@ function Show-SCMGameDetails {
             "0" {
                 return
             }
-
         }
-
     }
-
 }
 
 Export-ModuleMember -Function Show-SCMBrowseMenu
