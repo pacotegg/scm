@@ -7,65 +7,82 @@ function Convert-SCMMetadata {
         $Game
     )
 
-    # Load definitions
-    $Definitions = Get-SCMDefinitions
-
-    $Definition = $Definitions | Where-Object { $_.gameid -eq $Game.GameID }
-
     # -------------------------
-    # BASE VALUES (fallback)
+    # BASE VALUES (DO NOT TOUCH)
     # -------------------------
 
-    $Title = $Game.Description
-    $Edition = ""
-    $Platform = ""
-    $Language = ""
+    $rawTitle = $Game.Description
+    $title = $rawTitle
+
+    $edition  = ""
+    $platform = ""
+    $language = ""
 
     # -------------------------
-    # PARSE PARENTHESIS METADATA
+    # EXTRA METADATA PARSING
     # -------------------------
 
-    if ($Game.Description -match '^(.*?)\s*\((.*?)\)$') {
+    if ($rawTitle -match '^(.*?)\s*\((.*?)\)$') {
 
-        $Title = $Matches[1].Trim()
+        $title = $Matches[1].Trim()
+        $parts = $Matches[2].Split('/')
 
-        $Parts = $Matches[2].Split('/')
-
-        switch ($Parts.Count) {
-            1 { $Edition = $Parts[0].Trim() }
+        switch ($parts.Count) {
+            1 { $edition  = $parts[0].Trim() }
             2 {
-                $Platform = $Parts[0].Trim()
-                $Language = $Parts[1].Trim()
+                $platform = $parts[0].Trim()
+                $language = $parts[1].Trim()
             }
             default {
-                $Edition  = $Parts[0].Trim()
-                $Platform = $Parts[1].Trim()
-                $Language = $Parts[2].Trim()
+                $edition  = $parts[0].Trim()
+                $platform = $parts[1].Trim()
+                $language = $parts[2].Trim()
             }
         }
     }
 
     # -------------------------
-    # APPLY DEFINITION OVERRIDES
+    # SERIES RULES (READ ONLY)
     # -------------------------
 
-    $CanonicalFolder = $Game.ShortID
-    $DisplayTitle = $Title
-    $Series = ""
+    $rulesFile = Join-Path (Get-SCMConfig).Paths.Database "SeriesRules.json"
 
-    if ($Definition) {
+    $rules = @()
+    if (Test-Path $rulesFile) {
+        $rules = Get-Content $rulesFile -Raw | ConvertFrom-Json
+    }
 
-        if ($Definition.displayTitle) {
-            $DisplayTitle = $Definition.displayTitle
+    $seriesId   = ""
+    $seriesName = ""
+    $gameTitle  = $title
+
+    foreach ($rule in $rules) {
+
+        if ($title -match $rule.Pattern) {
+
+            $seriesId   = $rule.SeriesId
+            $seriesName = $rule.Series
+
+            if ($rule.PSObject.Properties.Name -contains "RemovePrefix") {
+                $gameTitle = $title.Substring($rule.RemovePrefix.Length)
+            }
+            else {
+                $gameTitle = $title -replace $rule.Pattern, ""
+            }
+
+            $gameTitle = $gameTitle.Trim(" :-").Trim()
+            break
         }
+    }
 
-        if ($Definition.canonicalFolder) {
-            $CanonicalFolder = $Definition.canonicalFolder
-        }
+    # -------------------------
+    # DISPLAY TITLE (SAFE)
+    # -------------------------
 
-        if ($Definition.series) {
-            $Series = $Definition.series
-        }
+    $displayTitle = if ($seriesName) {
+        "$seriesName: $gameTitle"
+    } else {
+        $gameTitle
     }
 
     # -------------------------
@@ -73,23 +90,22 @@ function Convert-SCMMetadata {
     # -------------------------
 
     [PSCustomObject]@{
+        GameID   = $Game.GameID
+        Engine   = $Game.Engine
+        ShortID  = $Game.ShortID
 
-        GameID          = $Game.GameID
-        Engine          = $Game.Engine
-        ShortID         = $Game.ShortID
+        SeriesId   = $seriesId
+        SeriesName = $seriesName
 
-        Series          = $Series
-        Title           = $Title
-        DisplayTitle    = $DisplayTitle
+        Title        = $gameTitle
+        DisplayTitle = $displayTitle
 
-        CanonicalFolder = $CanonicalFolder
+        Edition  = $edition
+        Platform = $platform
+        Language = $language
 
-        Edition         = $Edition
-        Platform        = $Platform
-        Language        = $Language
-
-        Description     = $Game.Description
-        FullPath        = $Game.FullPath
+        Description = $rawTitle
+        FullPath    = $Game.FullPath
     }
 }
 
