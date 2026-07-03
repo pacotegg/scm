@@ -1,5 +1,5 @@
 ﻿Set-StrictMode -Version Latest
-$ErrorActionPreference = "Continue"
+$ErrorActionPreference = "Stop"
 
 $Root = Split-Path $PSCommandPath
 
@@ -7,14 +7,18 @@ Import-Module "$Root\Modules\Core\Core.psm1" -Force
 Import-Module "$Root\Modules\Core\Config.psm1" -Force
 Import-Module "$Root\Modules\Core\Logger.psm1" -Force
 Import-Module "$Root\Modules\Core\LibraryCleaner.psm1" -Force
+
 Import-Module "$Root\Modules\Library\Scanner.psm1" -Force
 Import-Module "$Root\Modules\Library\Parser.psm1" -Force
 Import-Module "$Root\Modules\Library\Metadata.psm1" -Force
 Import-Module "$Root\Modules\Library\CollectionStats.psm1" -Force
+
 Import-Module "$Root\Modules\Database\Database.psm1" -Force
+
 Import-Module "$Root\Modules\UI\Selector.psm1" -Force
 Import-Module "$Root\Modules\UI\Browser.psm1" -Force
 
+Import-Module "$Root\Modules\Repair\Validator.psm1" -Force
 
 $config = Get-Content "$Root\config.json" -Raw | ConvertFrom-Json
 
@@ -40,8 +44,9 @@ do {
 
     Write-Host "1  Scan Collection"
     Write-Host "2  Browse Collection"
-    Write-Host "3  Settings"
-    Write-Host "4  About"
+    Write-Host "3  Validate Collection"
+    Write-Host "4  Settings"
+    Write-Host "5  About"
     Write-Host "0  Exit"
     Write-Host ""
 
@@ -51,34 +56,54 @@ do {
 
         "1" {
 
-            $Library = Invoke-SCMScan
+            Invoke-SCMScan
             Pause-SCM
+
         }
 
         "2" {
 
-    $Games = @(Get-SCMDatabase)
+            $Games = @(Get-SCMDatabase)
 
-    if ($Games.Count -eq 0) {
+            if ($Games.Count -eq 0) {
 
-        Write-Host ""
-        Write-Host "Database is empty." -ForegroundColor Yellow
-        Pause-SCM
-        break
+                Write-Host ""
+                Write-Host "Database is empty." -ForegroundColor Yellow
+                Pause-SCM
+                break
 
-    }
+            }
 
-    Show-SCMBrowseMenu -Games $Games
-}
+            Show-SCMBrowseMenu -Games $Games
+
+        }
 
         "3" {
+
+            $Games = @(Get-SCMDatabase)
+
+            if ($Games.Count -eq 0) {
+
+                Write-Host ""
+                Write-Host "Database is empty." -ForegroundColor Yellow
+                Pause-SCM
+                break
+
+            }
+
+            Test-SCMCollection -Games $Games
+
+        }
+
+        "4" {
 
             Write-Host ""
             Write-Host "Settings are not implemented yet." -ForegroundColor Yellow
             Pause-SCM
+
         }
 
-        "4" {
+        "5" {
 
             Show-SCMHeader $config.Application.Version
 
@@ -93,6 +118,7 @@ do {
             Write-Host $config.Application.Version -ForegroundColor Cyan
 
             Pause-SCM
+
         }
 
     }
