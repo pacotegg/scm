@@ -15,44 +15,68 @@
 		"RemovePrefix": "Broken Sword"
     },
     {
-        "Pattern": "^King'?s Quest",
-        "Series": "King's Quest"
-    },
-    {
-        "Pattern": "^Police Quest",
-        "Series": "Police Quest"
-    },
-    {
-        "Pattern": "^Space Quest",
-        "Series": "Space Quest"
-    },
-    {
-        "Pattern": "^Quest for Glory",
-        "Series": "Quest for Glory"
-    },
-    {
-        "Pattern": "^Leisure Suit Larry",
-        "Series": "Leisure Suit Larry"
-    },
-    {
-        "Pattern": "^Laura Bow",
-        "Series": "Laura Bow"
-    },
-    {
-        "Pattern": "^Gabriel Knight",
+		"Pattern": "^King'?s Quest",
+		"Series": "King's Quest",
+		"RemovePrefix": "King's Quest"
+	},
+	{
+		"Pattern": "^Police Quest",
+		"Series": "Police Quest",
+		"RemovePrefix": "Police Quest"
+	},
+	{
+		"Pattern": "^Space Quest",
+		"Series": "Space Quest",
+		"RemovePrefix": "Space Quest"
+	},
+	{
+		"Pattern": "^Quest for Glory",
+		"Series": "Quest for Glory",
+		"RemovePrefix": "Quest for Glory"
+	},
+	{
+		"Pattern": "^Leisure Suit Larry",
+		"Series": "Leisure Suit Larry",
+		"RemovePrefix": "Leisure Suit Larry"
+	},
+	{
+		"Pattern": "^Laura Bow",
+		"Series": "Laura Bow",
+		"RemovePrefix": "Laura Bow"
+	},
+	{
+		"Pattern": "^Discworld",
+		"Series": "Discworld",
+		"RemovePrefix": "Discworld"
+	},
+	{
+		"Pattern": "^Simon the Sorcerer",
+		"Series": "Simon the Sorcerer",
+		"RemovePrefix": "Simon the Sorcerer"
+	},
+	{
+		"Pattern": "^Gabriel Knight:",
 		"Series": "Gabriel Knight",
 		"RemovePrefix": "Gabriel Knight:"
-    },
+	},
+	{
+	
+		"Pattern": "Gabriel Knight Mystery$",
+		"Series": "Gabriel Knight"
+	},
     {
-        "Pattern": "^Discworld",
-        "Series": "Discworld"
-    },
-    {
-        "Pattern": "^Gobli",
-        "Series": "Gobliiins"
-    },
-    {
-        "Pattern": "^Simon the Sorcerer",
-        "Series": "Simon the Sorcerer"
-    }
+		"Pattern": "^Gobliiins",
+		"Series": "Gobliiins",
+		"RemovePrefix": "Gobliiins"
+	},
+	{
+		"Pattern": "^Gobliins",
+		"Series": "Gobliiins",
+		"RemovePrefix": "Gobliins"
+	},
+	{
+		"Pattern": "^Goblins Quest",
+		"Series": "Gobliiins",
+		"RemovePrefix": "Goblins Quest"
+	},
 ]

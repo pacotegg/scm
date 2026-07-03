@@ -21,20 +21,15 @@ function Show-SCMBrowseMenu {
         Write-Host "4  Browse by Language"
         Write-Host "5  Browse by Platform"
         Write-Host "0  Back"
-
         Write-Host ""
 
         $Option = Read-Host "Option"
 
         switch ($Option) {
 
-            "1" {
-                Show-SCMBrowseByTitle -Games $Games
-            }
+            "1" { Show-SCMBrowseByTitle -Games $Games }
 
-            "2" {
-                Show-SCMBrowseBySeries -Games $Games
-            }
+            "2" { Show-SCMBrowseBySeries -Games $Games }
 
             "3" {
                 Write-Host ""
@@ -66,23 +61,24 @@ function Show-SCMBrowseByTitle {
         [array]$Games
     )
 
-    Clear-Host
+    $SortedGames = @($Games | Sort-Object Title)
 
-    Write-Host ""
-    Write-Host "========== BY TITLE ==========" -ForegroundColor Cyan
-    Write-Host ""
+    while ($true) {
 
-    $Index = 1
+        $Titles = $SortedGames | ForEach-Object { $_.DisplayTitle }
 
-    foreach ($Game in ($Games | Sort-Object Title)) {
+        $Selection = Show-SCMSelector `
+            -Title "Browse by Title" `
+            -Items $Titles
 
-        Write-Host ("{0,3}. {1}" -f $Index, $Game.Title)
+        if ($Selection -lt 0) {
+            return
+        }
 
-        $Index++
+        Show-SCMGameDetails -Game $SortedGames[$Selection]
+
     }
 
-    Write-Host ""
-    Pause-SCM
 }
 
 function Show-SCMBrowseBySeries {
@@ -95,28 +91,70 @@ function Show-SCMBrowseBySeries {
     Clear-Host
 
     Write-Host ""
-    Write-Host "========== BY SERIES ==========" -ForegroundColor Cyan
-    Write-Host ""
+    Write-Host "Not implemented yet." -ForegroundColor Yellow
+    Pause-SCM
 
-    $Series = $Games |
-        Where-Object { $_.Series } |
-        Group-Object Series |
-        Sort-Object Name
+}
 
-    foreach ($Group in $Series) {
+function Show-SCMGameDetails {
+
+    param(
+        [Parameter(Mandatory)]
+        $Game
+    )
+
+    while ($true) {
+
+        Clear-Host
 
         Write-Host ""
-        Write-Host $Group.Name -ForegroundColor Cyan
+        Write-Host "========================================" -ForegroundColor Cyan
+        Write-Host ""
 
-        foreach ($Game in ($Group.Group | Sort-Object Title)) {
+        if ($Game.Series) {
+            Write-Host $Game.Series -ForegroundColor Yellow
+        }
 
-            Write-Host ("    {0}" -f $Game.Title)
+        Write-Host $Game.Title -ForegroundColor White
+        Write-Host ""
+
+        Write-Host ("Engine     : {0}" -f $Game.Engine)
+        Write-Host ("Edition    : {0}" -f $Game.Edition)
+        Write-Host ("Platform   : {0}" -f $Game.Platform)
+        Write-Host ("Language   : {0}" -f $Game.Language)
+        Write-Host ("Short ID   : {0}" -f $Game.ShortID)
+        Write-Host ("Game ID    : {0}" -f $Game.GameID)
+
+        Write-Host ""
+        Write-Host "Folder"
+        Write-Host $Game.FullPath -ForegroundColor DarkGray
+
+        Write-Host ""
+        Write-Host "1  Launch Game"
+        Write-Host "2  Open Folder"
+        Write-Host "0  Back"
+        Write-Host ""
+
+        switch (Read-Host "Option") {
+
+            "1" {
+                Write-Host ""
+                Write-Host "Launch not implemented yet." -ForegroundColor Yellow
+                Pause-SCM
+            }
+
+            "2" {
+                Start-Process explorer.exe $Game.FullPath
+            }
+
+            "0" {
+                return
+            }
 
         }
+
     }
 
-    Write-Host ""
-    Pause-SCM
 }
 
 Export-ModuleMember -Function Show-SCMBrowseMenu
