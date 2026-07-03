@@ -7,14 +7,23 @@ function Convert-SCMMetadata {
         $Game
     )
 
-    #-------------------------------------------------------
-    # Parse Description
-    #-------------------------------------------------------
+    # Load definitions
+    $Definitions = Get-SCMDefinitions
+
+    $Definition = $Definitions | Where-Object { $_.gameid -eq $Game.GameID }
+
+    # -------------------------
+    # BASE VALUES (fallback)
+    # -------------------------
 
     $Title = $Game.Description
     $Edition = ""
     $Platform = ""
     $Language = ""
+
+    # -------------------------
+    # PARSE PARENTHESIS METADATA
+    # -------------------------
 
     if ($Game.Description -match '^(.*?)\s*\((.*?)\)$') {
 
@@ -23,16 +32,11 @@ function Convert-SCMMetadata {
         $Parts = $Matches[2].Split('/')
 
         switch ($Parts.Count) {
-
-            1 {
-                $Edition = $Parts[0].Trim()
-            }
-
+            1 { $Edition = $Parts[0].Trim() }
             2 {
                 $Platform = $Parts[0].Trim()
                 $Language = $Parts[1].Trim()
             }
-
             default {
                 $Edition  = $Parts[0].Trim()
                 $Platform = $Parts[1].Trim()
@@ -41,73 +45,51 @@ function Convert-SCMMetadata {
         }
     }
 
-    #-------------------------------------------------------
-    # Series detection
-    #-------------------------------------------------------
+    # -------------------------
+    # APPLY DEFINITION OVERRIDES
+    # -------------------------
 
+    $CanonicalFolder = $Game.ShortID
+    $DisplayTitle = $Title
     $Series = ""
-    $GameTitle = $Title
 
-    $RulesFile = Join-Path (Get-SCMConfig).Paths.Database "SeriesRules.json"
+    if ($Definition) {
 
-    if (Test-Path $RulesFile) {
+        if ($Definition.displayTitle) {
+            $DisplayTitle = $Definition.displayTitle
+        }
 
-        $Rules = Get-Content $RulesFile -Raw | ConvertFrom-Json
+        if ($Definition.canonicalFolder) {
+            $CanonicalFolder = $Definition.canonicalFolder
+        }
 
-        foreach ($Rule in $Rules) {
-
-            if ($Title -match $Rule.Pattern) {
-
-                $Series = $Rule.Series
-
-                if ($Rule.PSObject.Properties.Name -contains "RemovePrefix") {
-
-                    $GameTitle = $Title -replace "^$([regex]::Escape($Rule.RemovePrefix))", ""
-                    $GameTitle = $GameTitle.Trim(" :-")
-
-                }
-                else {
-
-                    $GameTitle = $Title
-
-                }
-
-                break
-            }
+        if ($Definition.series) {
+            $Series = $Definition.series
         }
     }
 
-    #-------------------------------------------------------
-    # Display title
-    #-------------------------------------------------------
-
-    if ([string]::IsNullOrWhiteSpace($Series)) {
-        $DisplayTitle = $GameTitle
-    }
-    else {
-        $DisplayTitle = "${Series}: $GameTitle"
-    }
-
-    #-------------------------------------------------------
-    # Result
-    #-------------------------------------------------------
+    # -------------------------
+    # OUTPUT OBJECT
+    # -------------------------
 
     [PSCustomObject]@{
 
-        GameID       = $Game.GameID
-        Engine       = $Game.Engine
-        ShortID      = $Game.ShortID
+        GameID          = $Game.GameID
+        Engine          = $Game.Engine
+        ShortID         = $Game.ShortID
 
-        Series       = $Series
-        Title        = $GameTitle
-        DisplayTitle = $DisplayTitle
+        Series          = $Series
+        Title           = $Title
+        DisplayTitle    = $DisplayTitle
 
-        Edition      = $Edition
-        Platform     = $Platform
-        Language     = $Language
+        CanonicalFolder = $CanonicalFolder
 
-        Description  = $Game.Description
-        FullPath     = $Game.FullPath
+        Edition         = $Edition
+        Platform        = $Platform
+        Language        = $Language
+
+        Description     = $Game.Description
+        FullPath        = $Game.FullPath
     }
 }
 

@@ -8,11 +8,11 @@
     "ScummVM": "C:\\Scripts\\ScummVM-Manager\\Bin\\ScummVM\\scummvm.exe",
     "RomFolder": "C:\\BOBwin\\roms\\scummvm",
     "Logs": "C:\\Scripts\\ScummVM-Manager\\Logs",
-    "Database": "C:\\Scripts\\ScummVM-Manager\\Database"
+    "Database": "C:\\Scripts\\ScummVM-Manager\\Database",
+    "Definitions": "C:\\Scripts\\ScummVM-Manager\\Definitions"
   },
 
   "Preferences": {
-
     "Languages": [
       "English",
       "Spanish",

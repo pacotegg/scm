@@ -14,6 +14,7 @@ Import-Module "$Root\Modules\Library\Metadata.psm1" -Force
 Import-Module "$Root\Modules\Library\CollectionStats.psm1" -Force
 
 Import-Module "$Root\Modules\Database\Database.psm1" -Force
+Import-Module "$Root\Modules\Definitions\Definitions.psm1" -Force
 
 Import-Module "$Root\Modules\UI\Selector.psm1" -Force
 Import-Module "$Root\Modules\UI\Browser.psm1" -Force
