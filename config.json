@@ -1,0 +1,40 @@
+{
+  "Application": {
+    "Name": "ScummVM Collection Manager",
+    "Version": "0.2.0-alpha1"
+  },
+
+  "Paths": {
+    "ScummVM": "C:\\Scripts\\ScummVM-Manager\\Bin\\ScummVM\\scummvm.exe",
+    "RomFolder": "C:\\BOBwin\\roms\\scummvm",
+    "Logs": "C:\\Scripts\\ScummVM-Manager\\Logs",
+    "Database": "C:\\Scripts\\ScummVM-Manager\\Database"
+  },
+
+  "Preferences": {
+
+    "Languages": [
+      "English",
+      "Spanish",
+      "French",
+      "German",
+      "Italian"
+    ],
+
+    "Platforms": [
+      "Windows",
+      "DOS",
+      "FM-TOWNS",
+      "PC-Engine",
+      "Amiga",
+      "Mac"
+    ],
+
+    "PreferCD": true,
+    "PreferTalkie": true,
+    "PreferRestored": true,
+
+    "IgnoreDemo": true,
+    "IgnoreUnknown": true
+  }
+}

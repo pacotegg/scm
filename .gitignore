@@ -1,0 +1,52 @@
+# ------------------------------------------------------------
+# ScummVM Collection Manager
+# ------------------------------------------------------------
+
+# ScummVM binaries
+Bin/
+
+# Generated database
+Database/games.json
+
+# Generated reports
+Reports/
+
+# Logs
+Logs/
+
+# Temporary files
+Temp/
+
+# PowerShell history
+*.pshistory
+
+# PowerShell editor files
+*.psd1.bak
+*.psm1.bak
+
+# Visual Studio Code
+.vscode/
+
+# Visual Studio
+.vs/
+
+# JetBrains
+.idea/
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Git
+*.orig
+
+# Archives
+*.zip
+*.7z
+*.rar
+
+# Backups
+Backup/
+
+# Local configuration overrides (keep config.json tracked)
+config.local.json

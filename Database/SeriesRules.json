@@ -1,0 +1,58 @@
+[
+	{
+		"Pattern": "^Indiana Jones",
+		"Series": "Indiana Jones",
+		"RemovePrefix": "Indiana Jones and the"
+	},
+    {
+        "Pattern": "^Monkey Island",
+		"Series": "Monkey Island",
+		"RemovePrefix": "Monkey Island"
+    },
+    {
+        "Pattern": "^Broken Sword",
+		"Series": "Broken Sword",
+		"RemovePrefix": "Broken Sword"
+    },
+    {
+        "Pattern": "^King'?s Quest",
+        "Series": "King's Quest"
+    },
+    {
+        "Pattern": "^Police Quest",
+        "Series": "Police Quest"
+    },
+    {
+        "Pattern": "^Space Quest",
+        "Series": "Space Quest"
+    },
+    {
+        "Pattern": "^Quest for Glory",
+        "Series": "Quest for Glory"
+    },
+    {
+        "Pattern": "^Leisure Suit Larry",
+        "Series": "Leisure Suit Larry"
+    },
+    {
+        "Pattern": "^Laura Bow",
+        "Series": "Laura Bow"
+    },
+    {
+        "Pattern": "^Gabriel Knight",
+		"Series": "Gabriel Knight",
+		"RemovePrefix": "Gabriel Knight:"
+    },
+    {
+        "Pattern": "^Discworld",
+        "Series": "Discworld"
+    },
+    {
+        "Pattern": "^Gobli",
+        "Series": "Gobliiins"
+    },
+    {
+        "Pattern": "^Simon the Sorcerer",
+        "Series": "Simon the Sorcerer"
+    }
+]
