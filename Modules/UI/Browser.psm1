@@ -89,10 +89,10 @@ function Show-SCMBrowseBySeries {
     )
 
     $Series = @(
-        $Games |
-        Where-Object { -not [string]::IsNullOrWhiteSpace($_.Series) } |
-        Group-Object Series |
-        Sort-Object Name
+		$Games |
+		Where-Object { -not [string]::IsNullOrWhiteSpace($_.SeriesName) } |
+		Group-Object SeriesId |
+		Sort-Object Name
     )
 
     if ($Series.Count -eq 0) {
@@ -119,7 +119,7 @@ function Show-SCMBrowseBySeries {
         )
 
         $GameSelection = Show-SCMSelector `
-            -Title $Series[$Selection].Name `
+            -Title $Series[$Selection].Group[0].SeriesName `
             -Items ($GamesInSeries | ForEach-Object DisplayTitle)
 
         if ($GameSelection -lt 0) {
@@ -145,8 +145,8 @@ function Show-SCMGameDetails {
         Write-Host "========================================" -ForegroundColor Cyan
         Write-Host ""
 
-        if ($Game.Series) {
-            Write-Host $Game.Series -ForegroundColor Yellow
+        if (-not [string]::IsNullOrWhiteSpace($Game.SeriesName)) {
+			Write-Host $Game.SeriesName -ForegroundColor Yellow
         }
 
         Write-Host $Game.Title -ForegroundColor White
